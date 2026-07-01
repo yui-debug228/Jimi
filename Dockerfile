@@ -9,7 +9,7 @@ RUN apk add --no-cache python3 make g++
 COPY package*.json ./
 
 # 安装依赖
-RUN npm install --omit=dev
+RUN npm install
 
 # 复制项目代码
 COPY . .

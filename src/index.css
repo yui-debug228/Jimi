@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 94.9%;
+    --foreground: 0 0% 0%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 94.9%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 0 0% 90%;
+    --muted-foreground: 0 0% 69%;
+    --accent: 0 0% 90%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 69%;
+    --input: 0 0% 69%;
+    --ring: 0 0% 0%;
+    --radius: 0.5rem;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background-color: #f2f2f2;
+    color: #000000;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3 {
+    font-family: "Noto Serif SC", "Songti SC", "Times New Roman", serif;
+    font-weight: 300;
+    line-height: 1.4;
+  }
+
+  ::selection {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #000000;
+  }
+}
+
+@layer components {
+  .serif-display {
+    font-family: "Noto Serif SC", "Songti SC", "Times New Roman", serif;
+    font-weight: 300;
+  }
+
+  .text-muted-custom {
+    color: #b1b1b1;
+  }
+
+  .divider-line {
+    height: 1px;
+    background-color: #b1b1b1;
+    width: 100%;
+  }
+}

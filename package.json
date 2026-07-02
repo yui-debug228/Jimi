@@ -17,6 +17,9 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio"
   },
+  "engines": {
+    "node": "20.x"
+  },
   "dependencies": {
     "@hono/node-server": "^1.14.3",
     "@hookform/resolvers": "^5.2.2",

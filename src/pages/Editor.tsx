@@ -71,18 +71,26 @@ export default function Editor() {
     const reader = new FileReader();
     reader.onload = (event) => {
       const base64 = event.target?.result as string;
-      const newImage = {
-        id: `upload-${Date.now()}`,
-        url: base64,
-        title: file.name.replace(/\.[^/.]+$/, ""),
-        description: ""
-      };
-      setData((prev: typeof siteData) => ({
-        ...prev,
-        gallery: { ...prev.gallery, images: [...prev.gallery.images, newImage] }
-      }));
-      setSaved(false);
-      setExportUrl(null);
+      setCropModal({
+        open: true,
+        imageUrl: base64,
+        aspectRatio: 1,
+        onConfirm: (cropped: string) => {
+          const newImage = {
+            id: `upload-${Date.now()}`,
+            url: cropped,
+            title: file.name.replace(/\.[^/.]+$/, ""),
+            description: ""
+          };
+          setData((prev: typeof siteData) => ({
+            ...prev,
+            gallery: { ...prev.gallery, images: [...prev.gallery.images, newImage] }
+          }));
+          setSaved(false);
+          setExportUrl(null);
+          setCropModal(prev => ({ ...prev, open: false }));
+        },
+      });
     };
     reader.readAsDataURL(file);
     e.target.value = "";

@@ -1,10 +1,14 @@
-import { useState, type ChangeEvent } from "react";
+import { useState, useEffect, type ChangeEvent } from "react";
 import siteData from "@/data/siteData.json";
-import { Image, Video, Type, Download, RotateCcw, Trash2, Plus, Upload, Save, ArrowLeft } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
+import { Image, Video, Type, Download, RotateCcw, Trash2, Plus, Upload, Save, ArrowLeft, Shield } from "lucide-react";
 import { useNavigate } from "react-router";
 
 export default function Editor() {
   const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuth();
+  const { isAdmin } = useAdmin();
   const [data, setData] = useState(() => {
     try {
       const stored = localStorage.getItem("siteData_override");
@@ -16,7 +20,25 @@ export default function Editor() {
   const [exportUrl, setExportUrl] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
-  const update = (path: string, value: unknown) => {
+  // 权限检查：只有管理员能访问编辑器
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    } else if (!isAdmin) {
+      navigate("/");
+    }
+  }, [isAuthenticated, isAdmin, navigate]);
+
+  if (!isAuthenticated || !isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#f2f2f2" }}>
+        <div className="text-center">
+          <Shield size={32} style={{ color: "#b1b1b1" }} className="mx-auto mb-4" />
+          <p style={{ color: "#8d8d8d" }}>请先以管理员身份登录</p>
+        </div>
+      </div>
+    );
+  }
     setData((prev: typeof siteData) => {
       const keys = path.split('.');
       const copy: Record<string, unknown> = { ...prev };

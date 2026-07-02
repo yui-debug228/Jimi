@@ -1,16 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useAdmin } from "@/hooks/useAdmin";
-import { Play, ExternalLink, Lock, X } from "lucide-react";
 import siteData from "@/data/siteData.json";
+import { Play, X, ExternalLink } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function VideoSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [playingBvid, setPlayingBvid] = useState<string | null>(null);
-  const { isAdmin } = useAdmin();
 
   const videos = siteData.videos;
 
@@ -22,7 +20,7 @@ export default function VideoSection() {
       });
     }, sectionRef);
     return () => ctx.revert();
-  }, [videos.length]);
+  }, []);
 
   const getEmbedUrl = (bvid: string) => `https://player.bilibili.com/player.html?bvid=${bvid}&autoplay=1`;
   const getBilibiliPageUrl = (bvid: string) => `https://www.bilibili.com/video/${bvid}`;
@@ -40,11 +38,6 @@ export default function VideoSection() {
               className="hidden md:flex items-center gap-1.5 text-xs transition-colors duration-300 hover:text-[#8d8d8d]" style={{ color: "#b1b1b1" }}>
               在 B 站查看更多 <ExternalLink size={12} />
             </a>
-            {isAdmin ? (
-              <div className="flex items-center gap-1.5 text-xs" style={{ color: "#b1b1b1" }}><Lock size={12} />静态模式下不可编辑</div>
-            ) : (
-              <div className="flex items-center gap-1.5 text-xs" style={{ color: "#b1b1b1" }}><Lock size={12} />管理员可查看</div>
-            )}
           </div>
         </div>
 
@@ -53,9 +46,9 @@ export default function VideoSection() {
             {videos.map((video) => (
               <div key={video.id} className="video-card opacity-0 group cursor-pointer" onClick={() => setPlayingBvid(video.bvid)}>
                 <div className="relative overflow-hidden" style={{ borderRadius: "4px", aspectRatio: "16/10" }}>
-                  <img src={video.thumbnail || `images/mimi-hero.jpg`} alt={video.title}
+                  <img src={video.thumbnail || "images/mimi-hero.jpg"} alt={video.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy"
-                    onError={(e) => { (e.target as HTMLImageElement).src = `images/mimi-hero.jpg`; }} />
+                    onError={(e) => { (e.target as HTMLImageElement).src = "images/mimi-hero.jpg"; }} />
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-400">
                     <div className="w-14 h-14 flex items-center justify-center rounded-full" style={{ backgroundColor: "rgba(0,0,0,0.6)" }}>
                       <Play size={24} className="text-white ml-1" />

@@ -2,6 +2,8 @@ app = "jimi-cat-showcase"
 primary_region = "sin"
 
 [build]
+  dockerfile = "Dockerfile"
+
 [deploy]
   release_command = "npm run db:migrate"
 
@@ -14,6 +16,7 @@ primary_region = "sin"
   PORT = "3000"
   DATABASE_PATH = "/app/data/app.db"
   VITE_KIMI_AUTH_URL = "https://auth.kimi.com"
+  VITE_APP_ID = "temp"
   KIMI_AUTH_URL = "https://auth.kimi.com"
   KIMI_OPEN_URL = "https://open.kimi.com"
   OWNER_UNION_ID = "local"

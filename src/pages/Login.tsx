@@ -15,8 +15,13 @@ export default function Login() {
     e.preventDefault();
     setError("");
     if (!username.trim() || !password.trim()) { setError("请填写用户名和密码"); return; }
-    // Demo login: any username/password works. Use "admin" as username for admin role.
-    const role = username.trim() === "admin" ? "admin" : "user";
+    // 密码经过编码存储，避免被直接看到。请将仓库设为私有以获得最佳安全性。
+    const encodedAdminPassword = "WGN6MjAwNTEyMjQ="; // base64 of Xcz20051224
+    let decodedPassword = "";
+    try { decodedPassword = atob(encodedAdminPassword); } catch {}
+    const isAdmin = username.trim() === "admin" && password.trim() === decodedPassword;
+    if (username.trim() === "admin" && !isAdmin) { setError("密码错误"); return; }
+    const role = isAdmin ? "admin" : "user";
     login(username.trim(), role);
   };
 

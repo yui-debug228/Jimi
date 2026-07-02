@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import siteData from "@/data/siteData.json";
+import { assetUrl } from "@/lib/utils";
 import { Play, X, ExternalLink } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -10,7 +11,8 @@ export default function VideoSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [playingBvid, setPlayingBvid] = useState<string | null>(null);
 
-  const videos = siteData.videos;
+  const videos = siteData?.videos ?? [];
+  const videoList = videos.map(v => ({...v, thumbnailUrl: assetUrl(v.thumbnail || "images/mimi-hero.jpg")}));
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -41,14 +43,14 @@ export default function VideoSection() {
           </div>
         </div>
 
-        {videos.length > 0 ? (
+        {videoList.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {videos.map((video) => (
+            {videoList.map((video) => (
               <div key={video.id} className="video-card opacity-0 group cursor-pointer" onClick={() => setPlayingBvid(video.bvid)}>
                 <div className="relative overflow-hidden" style={{ borderRadius: "4px", aspectRatio: "16/10" }}>
-                  <img src={video.thumbnail || "images/mimi-hero.jpg"} alt={video.title}
+                  <img src={video.thumbnailUrl} alt={video.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy"
-                    onError={(e) => { (e.target as HTMLImageElement).src = "images/mimi-hero.jpg"; }} />
+                    onError={(e) => { const img = e.target as HTMLImageElement; img.onerror = null; img.src = assetUrl("images/mimi-hero.jpg"); }} />
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-400">
                     <div className="w-14 h-14 flex items-center justify-center rounded-full" style={{ backgroundColor: "rgba(0,0,0,0.6)" }}>
                       <Play size={24} className="text-white ml-1" />

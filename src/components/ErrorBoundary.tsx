@@ -41,7 +41,7 @@ export class ErrorBoundary extends Component<Props, State> {
             >
               刷新页面
             </button>
-            {process.env.NODE_ENV === "development" && this.state.error && (
+            {import.meta.env.DEV && this.state.error && (
               <pre className="mt-6 text-left text-xs p-4 overflow-auto" style={{ backgroundColor: "#fff", color: "#c62828", maxHeight: "200px" }}>
                 {this.state.error.stack}
               </pre>

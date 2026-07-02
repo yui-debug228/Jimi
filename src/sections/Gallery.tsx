@@ -28,12 +28,12 @@ export default function Gallery() {
   const { isAdmin } = useAdmin();
   const { isAuthenticated } = useAuth();
 
-  const uploadedImages = siteData.gallery.images.map((img) => ({
+  const uploadedImages = siteData.gallery?.images?.map((img) => ({
     id: img.id,
-    url: img.url,
+    url: assetUrl(img.url),
     title: img.title || "",
     description: img.description || "",
-  }));
+  })) ?? [];
 
   const allImages = [...presetImages, ...uploadedImages];
 

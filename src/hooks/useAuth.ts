@@ -11,15 +11,28 @@ export type DemoUser = {
   unionId: string;
 };
 
+const getStorageItem = (key: string): string | null => {
+  try { return localStorage.getItem(key); } catch { return null; }
+};
+const setStorageItem = (key: string, value: string): void => {
+  try { localStorage.setItem(key, value); } catch { /* ignore */ }
+};
+const removeStorageItem = (key: string): void => {
+  try { localStorage.removeItem(key); } catch { /* ignore */ }
+};
+const safeReload = (): void => {
+  if (typeof window !== "undefined") window.location.reload();
+};
+
 export function useAuth() {
-  const userStr = localStorage.getItem(DEMO_USER_KEY);
+  const userStr = getStorageItem(DEMO_USER_KEY);
 
   const user: DemoUser | null = useMemo(() => {
     if (!userStr) return null;
     try {
       return JSON.parse(userStr) as DemoUser;
     } catch {
-      localStorage.removeItem(DEMO_USER_KEY);
+      removeStorageItem(DEMO_USER_KEY);
       return null;
     }
   }, [userStr]);
@@ -35,13 +48,13 @@ export function useAuth() {
       role,
       unionId: `local:${name}`,
     };
-    localStorage.setItem(DEMO_USER_KEY, JSON.stringify(demoUser));
-    window.location.reload();
+    setStorageItem(DEMO_USER_KEY, JSON.stringify(demoUser));
+    safeReload();
   }, []);
 
   const logout = useCallback(() => {
-    localStorage.removeItem(DEMO_USER_KEY);
-    window.location.reload();
+    removeStorageItem(DEMO_USER_KEY);
+    safeReload();
   }, []);
 
   return useMemo(

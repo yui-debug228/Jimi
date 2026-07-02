@@ -1,8 +1,9 @@
 import siteData from "@/data/siteData.json";
 
 export default function Footer() {
-  const siteName = siteData.footer.siteName;
-  const copyright = siteData.footer.copyright;
+  const footer = siteData?.footer ?? {};
+  const siteName = footer.siteName ?? "";
+  const copyright = footer.copyright ?? "";
 
   return (
     <footer

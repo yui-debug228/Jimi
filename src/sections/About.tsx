@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import siteData from "@/data/siteData.json";
+import { assetUrl } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -10,12 +11,14 @@ export default function About() {
   const textRef = useRef<HTMLParagraphElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
 
-  const aboutPortrait = siteData.about.aboutPortrait;
-  const aboutText = siteData.about.aboutText;
-  const catName = siteData.about.catName;
-  const catBreed = siteData.about.catBreed;
-  const catAge = siteData.about.catAge;
-  const catPersonality = siteData.about.catPersonality;
+  const about = siteData?.about ?? {};
+  const aboutPortrait = about.aboutPortrait ?? "";
+  const aboutText = about.aboutText ?? "";
+  const catName = about.catName ?? "";
+  const catBreed = about.catBreed ?? "";
+  const catAge = about.catAge ?? "";
+  const catPersonality = about.catPersonality ?? "";
+  const aboutPortraitUrl = assetUrl(aboutPortrait);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -38,7 +41,7 @@ export default function About() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 items-center">
           <div ref={imageRef} className="relative opacity-0">
             <div className="overflow-hidden" style={{ borderRadius: "4px" }}>
-              <img src={aboutPortrait} alt={`${catName}的肖像`} className="w-full h-auto object-cover transition-transform duration-700 hover:scale-105" style={{ aspectRatio: "3/4" }} />
+              <img src={aboutPortraitUrl} alt={`${catName}的肖像`} className="w-full h-auto object-cover transition-transform duration-700 hover:scale-105" style={{ aspectRatio: "3/4" }} />
             </div>
             <div className="absolute -bottom-4 -right-4 text-xs tracking-widest" style={{ color: "#b1b1b1", fontFamily: '"Cinzel", "Didot", serif' }}>
               {catName.toUpperCase()} · 2024

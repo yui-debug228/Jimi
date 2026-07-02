@@ -232,11 +232,39 @@ export default function Editor() {
             {data.videos.map((video: Record<string, unknown>, index: number) => (
               <div key={video.id as number} className="p-4 space-y-3" style={{ backgroundColor: "#fff", border: "1px solid #e5e5e5", borderRadius: "4px" }}>
                 <div className="flex gap-4">
-                  <img src={video.thumbnail as string} alt="" className="w-32 h-20 object-cover" style={{ borderRadius: "4px" }} />
+                  <div className="relative w-32 h-20 flex-shrink-0">
+                    <img src={(video.thumbnail as string) || "images/mimi-hero.jpg"} alt="" className="w-full h-full object-cover" style={{ borderRadius: "4px" }} />
+                  </div>
                   <div className="flex-1 space-y-2">
-                    <input value={video.bvid as string} onChange={e => updateVideo(index, "bvid", e.target.value)} className="w-full px-3 py-2 text-sm" style={{ backgroundColor: "#f2f2f2", borderRadius: "2px", border: "none" }} placeholder="BV号" />
+                    <input value={video.bvid as string} onChange={e => updateVideo(index, "bvid", e.target.value)} className="w-full px-3 py-2 text-sm" style={{ backgroundColor: "#f2f2f2", borderRadius: "2px", border: "none" }} placeholder="BV号（如 BV1GJ411x7h7）" />
                     <input value={video.title as string} onChange={e => updateVideo(index, "title", e.target.value)} className="w-full px-3 py-2 text-sm" style={{ backgroundColor: "#f2f2f2", borderRadius: "2px", border: "none" }} placeholder="标题" />
                     <input value={video.description as string} onChange={e => updateVideo(index, "description", e.target.value)} className="w-full px-3 py-2 text-sm" style={{ backgroundColor: "#f2f2f2", borderRadius: "2px", border: "none" }} placeholder="描述" />
+                    <div className="flex gap-2">
+                      <input value={video.thumbnail as string} onChange={e => updateVideo(index, "thumbnail", e.target.value)} className="flex-1 px-3 py-2 text-sm" style={{ backgroundColor: "#f2f2f2", borderRadius: "2px", border: "none" }} placeholder="封面URL（留空使用默认）" />
+                      <button
+                        onClick={async () => {
+                          const bvid = (video.bvid as string).trim();
+                          if (!bvid) { alert("请先填写BV号"); return; }
+                          try {
+                            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.bilibili.com/x/web-interface/view?bvid=${bvid}`)}`;
+                            const res = await fetch(proxyUrl);
+                            const proxyData = await res.json();
+                            const apiData = JSON.parse(proxyData.contents);
+                            if (apiData?.data?.pic) {
+                              updateVideo(index, "thumbnail", apiData.data.pic);
+                            } else {
+                              alert("未获取到封面，请手动填写或检查BV号是否正确");
+                            }
+                          } catch {
+                            alert("获取封面失败，请手动填写封面URL");
+                          }
+                        }}
+                        className="px-3 py-2 text-xs text-white"
+                        style={{ backgroundColor: "#263238", borderRadius: "2px" }}
+                      >
+                        获取B站封面
+                      </button>
+                    </div>
                   </div>
                   <button onClick={() => removeVideo(index)} className="p-2" style={{ color: "#c62828" }}><Trash2 size={16} /></button>
                 </div>

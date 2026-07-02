@@ -1,31 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { trpc } from "@/providers/trpc";
 import { useAdmin } from "@/hooks/useAdmin";
-import { Play, Plus, X, Loader2, ExternalLink, Lock } from "lucide-react";
+import { Play, ExternalLink, Lock, X } from "lucide-react";
+import siteData from "@/data/siteData.json";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function VideoSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [videoUrl, setVideoUrl] = useState("");
-  const [videoTitle, setVideoTitle] = useState("");
-  const [videoDesc, setVideoDesc] = useState("");
   const [playingBvid, setPlayingBvid] = useState<string | null>(null);
   const { isAdmin } = useAdmin();
 
-  const utils = trpc.useUtils();
-  const { data: videos, isLoading } = trpc.bilibili.list.useQuery();
-  const createVideo = trpc.bilibili.create.useMutation({
-    onSuccess: () => { utils.bilibili.list.invalidate(); setVideoUrl(""); setVideoTitle(""); setVideoDesc(""); setShowAddForm(false); },
-    onError: (err) => alert("添加失败: " + err.message),
-  });
-  const deleteVideo = trpc.bilibili.delete.useMutation({
-    onSuccess: () => utils.bilibili.list.invalidate(),
-    onError: (err) => alert("删除失败: " + err.message),
-  });
+  const videos = siteData.videos;
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -35,12 +22,7 @@ export default function VideoSection() {
       });
     }, sectionRef);
     return () => ctx.revert();
-  }, [videos?.length]);
-
-  const handleAddVideo = () => {
-    if (!videoUrl.trim() || !videoTitle.trim()) return;
-    createVideo.mutate({ url: videoUrl.trim(), title: videoTitle.trim(), description: videoDesc || undefined });
-  };
+  }, [videos.length]);
 
   const getEmbedUrl = (bvid: string) => `https://player.bilibili.com/player.html?bvid=${bvid}&autoplay=1`;
   const getBilibiliPageUrl = (bvid: string) => `https://www.bilibili.com/video/${bvid}`;
@@ -59,59 +41,27 @@ export default function VideoSection() {
               在 B 站查看更多 <ExternalLink size={12} />
             </a>
             {isAdmin ? (
-              <button onClick={() => setShowAddForm(!showAddForm)}
-                className="flex items-center gap-2 px-5 py-2.5 text-sm border transition-all duration-400 hover:bg-black hover:text-white"
-                style={{ borderColor: "#b1b1b1", borderRadius: "2px", color: "#000", backgroundColor: "transparent" }}>
-                <Plus size={14} />{showAddForm ? "取消" : "添加视频"}
-              </button>
+              <div className="flex items-center gap-1.5 text-xs" style={{ color: "#b1b1b1" }}><Lock size={12} />静态模式下不可编辑</div>
             ) : (
-              <div className="flex items-center gap-1.5 text-xs" style={{ color: "#b1b1b1" }}><Lock size={12} />管理员可编辑</div>
+              <div className="flex items-center gap-1.5 text-xs" style={{ color: "#b1b1b1" }}><Lock size={12} />管理员可查看</div>
             )}
           </div>
         </div>
 
-        {isAdmin && showAddForm && (
-          <div className="mb-12 p-6" style={{ border: "1px solid #b1b1b1", borderRadius: "4px", backgroundColor: "rgba(255,255,255,0.6)" }}>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm tracking-wide" style={{ color: "#8d8d8d" }}>添加 B 站视频</h3>
-              <button onClick={() => setShowAddForm(false)} className="transition-colors duration-300 hover:text-[#8d8d8d]"><X size={16} /></button>
-            </div>
-            <div className="space-y-3">
-              <input type="text" placeholder="B 站视频链接 *" value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)}
-                className="w-full px-4 py-2.5 text-sm border outline-none focus:border-black" style={{ borderColor: "#e5e5e5", borderRadius: "2px", backgroundColor: "#fff" }} />
-              <input type="text" placeholder="视频标题 *" value={videoTitle} onChange={(e) => setVideoTitle(e.target.value)}
-                className="w-full px-4 py-2.5 text-sm border outline-none focus:border-black" style={{ borderColor: "#e5e5e5", borderRadius: "2px", backgroundColor: "#fff" }} />
-              <input type="text" placeholder="描述 (可选)" value={videoDesc} onChange={(e) => setVideoDesc(e.target.value)}
-                className="w-full px-4 py-2.5 text-sm border outline-none focus:border-black" style={{ borderColor: "#e5e5e5", borderRadius: "2px", backgroundColor: "#fff" }} />
-            </div>
-            <button onClick={handleAddVideo} disabled={createVideo.isPending || !videoUrl.trim() || !videoTitle.trim()}
-              className="mt-4 px-6 py-2.5 text-sm text-white transition-all disabled:opacity-40" style={{ backgroundColor: "#000", borderRadius: "2px" }}>
-              {createVideo.isPending ? <span className="flex items-center gap-2"><Loader2 size={14} className="animate-spin" />添加中...</span> : "确认添加"}
-            </button>
-          </div>
-        )}
-
-        {videos && videos.length > 0 ? (
+        {videos.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {videos.map((video) => (
               <div key={video.id} className="video-card opacity-0 group cursor-pointer" onClick={() => setPlayingBvid(video.bvid)}>
                 <div className="relative overflow-hidden" style={{ borderRadius: "4px", aspectRatio: "16/10" }}>
-                  <img src={video.thumbnail || `/images/mimi-hero.jpg`} alt={video.title}
+                  <img src={video.thumbnail || `images/mimi-hero.jpg`} alt={video.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy"
-                    onError={(e) => { (e.target as HTMLImageElement).src = "/images/mimi-hero.jpg"; }} />
+                    onError={(e) => { (e.target as HTMLImageElement).src = `images/mimi-hero.jpg`; }} />
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-400">
                     <div className="w-14 h-14 flex items-center justify-center rounded-full" style={{ backgroundColor: "rgba(0,0,0,0.6)" }}>
                       <Play size={24} className="text-white ml-1" />
                     </div>
                   </div>
                   <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 40%)" }} />
-                  {isAdmin && (
-                    <button onClick={(e) => { e.stopPropagation(); if (confirm("确定要删除这个视频吗？")) deleteVideo.mutate({ id: video.id }); }}
-                      className="absolute top-2 right-2 z-10 w-7 h-7 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
-                      style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
-                      <X size={12} className="text-white" />
-                    </button>
-                  )}
                 </div>
                 <div className="mt-3">
                   <h3 className="text-sm tracking-wide transition-colors duration-300 group-hover:text-[#8d8d8d]" style={{ color: "#000" }}>{video.title}</h3>
@@ -125,8 +75,6 @@ export default function VideoSection() {
             <p className="text-sm" style={{ color: "#b1b1b1" }}>还没有添加视频</p>
           </div>
         )}
-
-        {isLoading && <div className="flex items-center justify-center py-12"><Loader2 size={24} className="animate-spin" style={{ color: "#b1b1b1" }} /></div>}
       </div>
 
       {playingBvid && (

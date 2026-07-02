@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { trpc } from "@/providers/trpc";
+import siteData from "@/data/siteData.json";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -10,14 +10,12 @@ export default function About() {
   const textRef = useRef<HTMLParagraphElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
 
-  const { data: config } = trpc.siteConfig.list.useQuery();
-
-  const aboutPortrait = config?.aboutPortrait || "/images/mimi-portrait.jpg";
-  const aboutText = config?.aboutText || "米米是一只出生于杭州的灰色英短。她拥有安静的性格，喜欢趴在窗台上观察外面的世界，或者在温暖的午后蜷缩成一团。这是一个专门为她建立的网络小窝，记录她生活中的每一个慵懒瞬间。";
-  const catName = config?.catName || "米米";
-  const catBreed = config?.catBreed || "法国蓝猫 / 英短";
-  const catAge = config?.catAge || "2岁";
-  const catPersonality = config?.catPersonality || "文静、慵懒、好奇";
+  const aboutPortrait = siteData.about.aboutPortrait;
+  const aboutText = siteData.about.aboutText;
+  const catName = siteData.about.catName;
+  const catBreed = siteData.about.catBreed;
+  const catAge = siteData.about.catAge;
+  const catPersonality = siteData.about.catPersonality;
 
   useEffect(() => {
     const ctx = gsap.context(() => {

@@ -1,0 +1,87 @@
+{
+  "hero": {
+    "heroImage": "images/mimi-hero.jpg",
+    "heroTitle": "欢迎光临\n米米的小世界",
+    "heroSubtitle": "灰色法国蓝猫 · 2岁 · 性格文静"
+  },
+  "about": {
+    "aboutPortrait": "images/mimi-portrait.jpg",
+    "aboutText": "米米是一只出生于杭州的灰色英短。她拥有安静的性格，喜欢趴在窗台上观察外面的世界，或者在温暖的午后蜷缩成一团。这是一个专门为她建立的网络小窝，记录她生活中的每一个慵懒瞬间。",
+    "catName": "米米",
+    "catBreed": "法国蓝猫 / 英短",
+    "catAge": "2岁",
+    "catPersonality": "文静、慵懒、好奇"
+  },
+  "gallery": {
+    "images": [
+      {
+        "id": "preset-hero",
+        "url": "images/mimi-hero.jpg",
+        "title": "慵懒午后",
+        "description": "蜷缩在猫抓板窝里"
+      },
+      {
+        "id": "preset-portrait",
+        "url": "images/mimi-portrait.jpg",
+        "title": "歪头杀",
+        "description": "好奇地看着镜头"
+      },
+      {
+        "id": "preset-play",
+        "url": "images/mimi-play.jpg",
+        "title": "玩具时间",
+        "description": "专注地玩毛绒球"
+      },
+      {
+        "id": "preset-window",
+        "url": "images/mimi-window.jpg",
+        "title": "窗台时光",
+        "description": "趴在窗边看风景"
+      },
+      {
+        "id": "upload-1",
+        "url": "uploads/1782730119776-0j8a68.jpg",
+        "title": "米米的日常",
+        "description": "uploaded photo"
+      },
+      {
+        "id": "upload-2",
+        "url": "uploads/1782730146869-lprcbn.jpg",
+        "title": "米米的日常",
+        "description": "uploaded photo"
+      },
+      {
+        "id": "upload-3",
+        "url": "uploads/1782730231053-ivdz0j.jpg",
+        "title": "米米的日常",
+        "description": "uploaded photo"
+      },
+      {
+        "id": "upload-4",
+        "url": "uploads/1782730265900-g4ein1.jpg",
+        "title": "米米的日常",
+        "description": "uploaded photo"
+      }
+    ]
+  },
+  "videos": [
+    {
+      "id": 1,
+      "bvid": "BV1GJ411x7h7",
+      "title": "米米的可爱瞬间",
+      "description": "记录米米的日常生活",
+      "thumbnail": "images/mimi-hero.jpg"
+    },
+    {
+      "id": 2,
+      "bvid": "BV1GJ411x7h7",
+      "title": "米米的玩耍时光",
+      "description": "米米在玩玩具",
+      "thumbnail": "images/mimi-play.jpg"
+    }
+  ],
+  "footer": {
+    "siteName": "米米",
+    "copyright": "米米的小世界"
+  }
+}

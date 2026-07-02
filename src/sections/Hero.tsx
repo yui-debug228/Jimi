@@ -1,17 +1,14 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { trpc } from "@/providers/trpc";
+import siteData from "@/data/siteData.json";
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
 
-  const { data: config } = trpc.siteConfig.list.useQuery();
-
-  const heroImage = config?.heroImage || "/images/mimi-hero.jpg";
-  const heroTitle = config?.heroTitle || "欢迎光临\n米米的小世界";
-  const heroSubtitle = config?.heroSubtitle || "灰色法国蓝猫 · 2岁 · 性格文静";
+  const heroImage = siteData.hero.heroImage;
+  const heroTitle = siteData.hero.heroTitle;
+  const heroSubtitle = siteData.hero.heroSubtitle;
   const titleLines = heroTitle.split("\n").filter(Boolean);
 
   useEffect(() => {

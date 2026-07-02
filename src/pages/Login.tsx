@@ -1,62 +1,24 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { trpc } from "@/providers/trpc";
+import { useAuth } from "@/hooks/useAuth";
 import { Loader2, ArrowLeft, LogIn, UserPlus } from "lucide-react";
-
-function getOAuthUrl() {
-  const kimiAuthUrl = import.meta.env.VITE_KIMI_AUTH_URL;
-  const appID = import.meta.env.VITE_APP_ID;
-  const redirectUri = `${window.location.origin}/api/oauth/callback`;
-  const state = btoa(redirectUri);
-  const url = new URL(`${kimiAuthUrl}/api/oauth/authorize`);
-  url.searchParams.set("client_id", appID);
-  url.searchParams.set("redirect_uri", redirectUri);
-  url.searchParams.set("response_type", "code");
-  url.searchParams.set("scope", "profile");
-  url.searchParams.set("state", state);
-  return url.toString();
-}
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [mode, setMode] = useState<"login" | "register">("login");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [inviteCode, setInviteCode] = useState("");
   const [error, setError] = useState("");
-
-  const loginMutation = trpc.localAuth.login.useMutation({
-    onSuccess: (data) => {
-      if (data.token) {
-        localStorage.setItem("local_auth_token", data.token);
-        window.location.href = "/";
-      }
-    },
-    onError: (err) => setError(err.message),
-  });
-
-  const registerMutation = trpc.localAuth.register.useMutation({
-    onSuccess: (data) => {
-      if (data.token) {
-        localStorage.setItem("local_auth_token", data.token);
-        window.location.href = "/";
-      }
-    },
-    onError: (err) => setError(err.message),
-  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     if (!username.trim() || !password.trim()) { setError("请填写用户名和密码"); return; }
-    if (mode === "login") {
-      loginMutation.mutate({ username: username.trim(), password });
-    } else {
-      registerMutation.mutate({ username: username.trim(), password, inviteCode: inviteCode || undefined });
-    }
+    // Demo login: any username/password works. Use "admin" as username for admin role.
+    const role = username.trim() === "admin" ? "admin" : "user";
+    login(username.trim(), role);
   };
-
-  const isPending = loginMutation.isPending || registerMutation.isPending;
 
   return (
     <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#f2f2f2" }}>
@@ -81,19 +43,11 @@ export default function Login() {
               <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-3 py-2 text-sm border outline-none focus:border-black" style={{ borderColor: "#e5e5e5", borderRadius: "2px" }} />
             </div>
-            {mode === "register" && (
-              <div>
-                <label className="text-xs block mb-1.5" style={{ color: "#8d8d8d" }}>邀请码（如需）</label>
-                <input type="text" value={inviteCode} onChange={(e) => setInviteCode(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border outline-none focus:border-black" style={{ borderColor: "#e5e5e5", borderRadius: "2px" }} />
-              </div>
-            )}
             {error && <p className="text-xs" style={{ color: "#c62828" }}>{error}</p>}
-            <button type="submit" disabled={isPending}
-              className="w-full flex items-center justify-center gap-2 py-2.5 text-sm text-white disabled:opacity-40 transition-opacity"
+            <button type="submit"
+              className="w-full flex items-center justify-center gap-2 py-2.5 text-sm text-white transition-opacity"
               style={{ backgroundColor: "#000", borderRadius: "2px" }}>
-              {isPending ? <Loader2 size={14} className="animate-spin" /> : mode === "login" ? <LogIn size={14} /> : <UserPlus size={14} />}
-              {isPending ? "处理中..." : mode === "login" ? "登录" : "注册"}
+              <LogIn size={14} /> {mode === "login" ? "登录" : "注册"}
             </button>
           </form>
 
@@ -105,10 +59,9 @@ export default function Login() {
           </div>
 
           <div className="mt-4 pt-4" style={{ borderTop: "1px solid #e5e5e5" }}>
-            <button onClick={() => { window.location.href = getOAuthUrl(); }}
-              className="w-full py-2.5 text-xs border transition-all hover:bg-black hover:text-white" style={{ borderColor: "#e5e5e5", borderRadius: "2px" }}>
-              使用 Kimi OAuth 登录
-            </button>
+            <p className="text-xs text-center" style={{ color: "#b1b1b1" }}>
+              提示：用户名 admin 会自动获得管理员权限
+            </p>
           </div>
         </div>
       </div>

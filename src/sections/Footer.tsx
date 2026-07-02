@@ -1,4 +1,9 @@
+import siteData from "@/data/siteData.json";
+
 export default function Footer() {
+  const siteName = siteData.footer.siteName;
+  const copyright = siteData.footer.copyright;
+
   return (
     <footer
       className="relative overflow-hidden"
@@ -21,7 +26,7 @@ export default function Footer() {
             letterSpacing: "0.2em",
           }}
         >
-          米米
+          {siteName}
         </div>
 
         {/* Copyright */}
@@ -34,7 +39,7 @@ export default function Footer() {
               fontFamily: '-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif',
             }}
           >
-            © {new Date().getFullYear()} 米米的小世界. All rights reserved. Designed with love.
+            © {new Date().getFullYear()} {copyright}. All rights reserved. Designed with love.
           </p>
         </div>
       </div>

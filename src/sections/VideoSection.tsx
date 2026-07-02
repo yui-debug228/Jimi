@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import siteData from "@/data/siteData";
-import { assetUrl } from "@/lib/utils";
+import { assetUrl, resolveImage } from "@/lib/utils";
 import { Play, X, ExternalLink } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -12,7 +12,7 @@ export default function VideoSection() {
   const [playingBvid, setPlayingBvid] = useState<string | null>(null);
 
   const videos = siteData?.videos ?? [];
-  const videoList = videos.map(v => ({...v, thumbnailUrl: assetUrl(v.thumbnail || "images/mimi-hero.jpg")}));
+  const videoList = videos.map(v => ({...v, thumbnailUrl: resolveImage(v.thumbnail || "images/mimi-hero.jpg")}));
 
   useEffect(() => {
     const ctx = gsap.context(() => {

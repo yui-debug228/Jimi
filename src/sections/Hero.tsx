@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import siteData from "@/data/siteData";
-import { assetUrl } from "@/lib/utils";
+import { resolveImage } from "@/lib/utils";
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -9,6 +9,7 @@ export default function Hero() {
   const titleRef = useRef<HTMLDivElement>(null);
 
   const heroImage = siteData.hero?.heroImage ?? "";
+  const heroImageUrl = resolveImage(heroImage);
   const heroTitle = siteData.hero?.heroTitle ?? "";
   const heroSubtitle = siteData.hero?.heroSubtitle ?? "";
   const titleLines = heroTitle.split("\n").filter(Boolean);
@@ -42,7 +43,7 @@ export default function Hero() {
   return (
     <section ref={containerRef} className="relative w-full overflow-hidden" style={{ height: "100vh" }}>
       <div ref={imageRef} className="absolute inset-0 opacity-0" style={{ willChange: "transform" }}>
-        <img src={assetUrl(heroImage)} alt="米米" className="w-full h-full object-cover" style={{ filter: "brightness(0.95)" }} />
+        <img src={heroImageUrl} alt="米米" className="w-full h-full object-cover" style={{ filter: "brightness(0.95)" }} />
         <div className="absolute inset-0" style={{
           background: "linear-gradient(to bottom, rgba(242,242,242,0.3) 0%, rgba(242,242,242,0) 40%, rgba(242,242,242,0) 60%, rgba(242,242,242,0.95) 100%)",
         }} />

@@ -5,16 +5,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
 import { Heart, Lock } from "lucide-react";
 import siteData from "@/data/siteData";
-import { assetUrl } from "@/lib/utils";
+import { resolveImage } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const presetImages = [
-  { id: "preset-hero", url: assetUrl("images/mimi-hero.jpg"), title: "慵懒午后", description: "蜷缩在猫抓板窝里" },
-  { id: "preset-portrait", url: assetUrl("images/mimi-portrait.jpg"), title: "歪头杀", description: "好奇地看着镜头" },
-  { id: "preset-play", url: assetUrl("images/mimi-play.jpg"), title: "玩具时间", description: "专注地玩毛绒球" },
-  { id: "preset-window", url: assetUrl("images/mimi-window.jpg"), title: "窗台时光", description: "趴在窗边看风景" },
-];
 
 const bentoSpans = [
   "col-span-2 row-span-1", "col-span-1 row-span-2", "col-span-1 row-span-1",
@@ -28,14 +21,12 @@ export default function Gallery() {
   const { isAdmin } = useAdmin();
   const { isAuthenticated } = useAuth();
 
-  const uploadedImages = siteData.gallery?.images?.map((img) => ({
+  const images = siteData.gallery?.images?.map((img) => ({
     id: img.id,
-    url: assetUrl(img.url),
+    url: resolveImage(img.url),
     title: img.title || "",
     description: img.description || "",
   })) ?? [];
-
-  const allImages = [...presetImages, ...uploadedImages];
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (!gridRef.current) return;
@@ -57,7 +48,7 @@ export default function Gallery() {
       });
     }, sectionRef);
     return () => ctx.revert();
-  }, [allImages.length]);
+  }, [images.length]);
 
   return (
     <section id="gallery" ref={sectionRef} style={{ paddingTop: "15vh", paddingBottom: "15vh" }}>
@@ -75,9 +66,8 @@ export default function Gallery() {
         </div>
 
         <div ref={gridRef} className="grid grid-cols-2 md:grid-cols-4 gap-2" style={{ transformStyle: "preserve-3d", transition: "transform 0.3s ease-out" }} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
-          {allImages.map((image, index) => {
+          {images.map((image, index) => {
             const spanClass = bentoSpans[index % bentoSpans.length];
-            const isPreset = typeof image.id === "string" && String(image.id).startsWith("preset-");
             return (
               <div key={image.id} className={`gallery-item relative overflow-hidden opacity-0 group cursor-pointer ${spanClass}`} style={{ borderRadius: "4px" }}>
                 <div className="relative w-full h-full" style={{ minHeight: "200px" }}>
@@ -87,7 +77,7 @@ export default function Gallery() {
                     {image.description && <p className="text-white/70 text-xs mt-1">{image.description}</p>}
                   </div>
                 </div>
-                {isAuthenticated && !isPreset && <LikeButton />}
+                <LikeButton />
               </div>
             );
           })}

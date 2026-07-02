@@ -11,3 +11,9 @@ export function assetUrl(path: string): string {
   const cleanPath = path.startsWith("/") ? path.slice(1) : path;
   return `${base}${cleanPath}`;
 }
+
+/** Resolve image URL: base64 string or asset path */
+export function resolveImage(url: string): string {
+  if (url.startsWith("data:") || url.startsWith("http")) return url;
+  return assetUrl(url);
+}

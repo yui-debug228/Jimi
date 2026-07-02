@@ -153,6 +153,42 @@ export default function Editor() {
     }
   };
 
+  const readFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (event) => resolve(event.target?.result as string);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const uploadImageField = async (e: ChangeEvent<HTMLInputElement>, fieldPath: string) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const base64 = await readFileToBase64(file);
+    update(fieldPath, base64);
+    e.target.value = "";
+  };
+
+  const updateGalleryImage = (index: number, base64: string) => {
+    setData((prev: typeof siteData) => ({
+      ...prev,
+      gallery: {
+        ...prev.gallery,
+        images: prev.gallery.images.map((img, i) => i === index ? { ...img, url: base64 } : img)
+      }
+    }));
+    setSaved(false);
+    setExportUrl(null);
+  };
+
+  const handleReplaceGalleryImage = async (e: ChangeEvent<HTMLInputElement>, index: number) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const base64 = await readFileToBase64(file);
+    updateGalleryImage(index, base64);
+    e.target.value = "";
+  };
+
   return (
     <div style={{ backgroundColor: "#f2f2f2", minHeight: "100vh" }}>
       <header className="flex items-center justify-between px-8 md:px-16" style={{ height: "80px", borderBottom: "1px solid #e5e5e5" }}>
@@ -180,6 +216,32 @@ export default function Editor() {
             </p>
           </div>
         )}
+
+        <section>
+          <h2 className="serif-display flex items-center gap-2 mb-6" style={{ fontSize: "20px" }}><Image size={18} /> 关键图片</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* 首页背景图 */}
+            <div className="p-4" style={{ backgroundColor: "#fff", border: "1px solid #e5e5e5", borderRadius: "4px" }}>
+              <label className="text-xs block mb-2" style={{ color: "#8d8d8d" }}>首页背景图</label>
+              <img src={data.hero.heroImage} alt="首页背景" className="w-full h-32 object-cover mb-3" style={{ borderRadius: "4px" }} />
+              <label className="w-full p-2 flex items-center justify-center gap-2 cursor-pointer text-xs" style={{ border: "1px dashed #e5e5e5", borderRadius: "2px" }}>
+                <Upload size={14} style={{ color: "#8d8d8d" }} />
+                <span style={{ color: "#8d8d8d" }}>点击替换</span>
+                <input type="file" accept="image/*" onChange={e => uploadImageField(e, "hero.heroImage")} className="hidden" />
+              </label>
+            </div>
+            {/* 关于肖像图 */}
+            <div className="p-4" style={{ backgroundColor: "#fff", border: "1px solid #e5e5e5", borderRadius: "4px" }}>
+              <label className="text-xs block mb-2" style={{ color: "#8d8d8d" }}>关于肖像图</label>
+              <img src={data.about.aboutPortrait} alt="肖像" className="w-full h-32 object-cover mb-3" style={{ borderRadius: "4px" }} />
+              <label className="w-full p-2 flex items-center justify-center gap-2 cursor-pointer text-xs" style={{ border: "1px dashed #e5e5e5", borderRadius: "2px" }}>
+                <Upload size={14} style={{ color: "#8d8d8d" }} />
+                <span style={{ color: "#8d8d8d" }}>点击替换</span>
+                <input type="file" accept="image/*" onChange={e => uploadImageField(e, "about.aboutPortrait")} className="hidden" />
+              </label>
+            </div>
+          </div>
+        </section>
 
         <section>
           <h2 className="serif-display flex items-center gap-2 mb-6" style={{ fontSize: "20px" }}><Type size={18} /> 文字内容</h2>
@@ -210,7 +272,13 @@ export default function Editor() {
           <div className="space-y-4">
             {data.gallery.images.map((img: Record<string, string>, index: number) => (
               <div key={img.id} className="p-4 flex gap-4 items-start" style={{ backgroundColor: "#fff", border: "1px solid #e5e5e5", borderRadius: "4px" }}>
-                <img src={img.url} alt="" className="w-24 h-24 object-cover" style={{ borderRadius: "4px" }} />
+                <div className="relative">
+                  <img src={img.url} alt="" className="w-24 h-24 object-cover" style={{ borderRadius: "4px" }} />
+                  <label className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer" style={{ backgroundColor: "rgba(0,0,0,0.5)", borderRadius: "4px" }}>
+                    <Upload size={16} className="text-white" />
+                    <input type="file" accept="image/*" onChange={e => handleReplaceGalleryImage(e, index)} className="hidden" />
+                  </label>
+                </div>
                 <div className="flex-1 space-y-2">
                   <input value={img.title} onChange={e => updateImage(index, "title", e.target.value)} className="w-full px-3 py-2 text-sm" style={{ backgroundColor: "#f2f2f2", borderRadius: "2px", border: "none" }} placeholder="标题" />
                   <input value={img.description} onChange={e => updateImage(index, "description", e.target.value)} className="w-full px-3 py-2 text-sm" style={{ backgroundColor: "#f2f2f2", borderRadius: "2px", border: "none" }} placeholder="描述" />

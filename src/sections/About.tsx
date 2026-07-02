@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import siteData from "@/data/siteData";
-import { assetUrl } from "@/lib/utils";
+import { resolveImage } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,12 +13,12 @@ export default function About() {
 
   const about = siteData?.about ?? {};
   const aboutPortrait = about.aboutPortrait ?? "";
+  const aboutPortraitUrl = resolveImage(aboutPortrait);
   const aboutText = about.aboutText ?? "";
   const catName = about.catName ?? "";
   const catBreed = about.catBreed ?? "";
   const catAge = about.catAge ?? "";
   const catPersonality = about.catPersonality ?? "";
-  const aboutPortraitUrl = assetUrl(aboutPortrait);
 
   useEffect(() => {
     const ctx = gsap.context(() => {

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import siteData from "@/data/siteData.json";
+import siteData from "@/data/siteData";
 import { assetUrl } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);

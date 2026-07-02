@@ -4,7 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
 import { Heart, Lock } from "lucide-react";
-import siteData from "@/data/siteData.json";
+import siteData from "@/data/siteData";
 import { assetUrl } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);

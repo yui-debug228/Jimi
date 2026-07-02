@@ -1,4 +1,4 @@
-import siteData from "@/data/siteData.json";
+import siteData from "@/data/siteData";
 
 export default function Footer() {
   const footer = siteData?.footer ?? {};

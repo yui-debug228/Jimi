@@ -39,6 +39,7 @@ export default function Editor() {
       </div>
     );
   }
+  const update = (path: string, value: unknown) => {
     setData((prev: typeof siteData) => {
       const keys = path.split('.');
       const copy: Record<string, unknown> = { ...prev };

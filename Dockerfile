@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt
 
 # 复制依赖文件并安装（包含 devDependencies，vite 和 esbuild 需要）
 COPY package*.json ./
-RUN npm install --include=dev
+RUN npm install
 
 # 复制项目代码并构建
 COPY . .

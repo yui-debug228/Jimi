@@ -2,6 +2,7 @@ import { useState, useEffect, type ChangeEvent } from "react";
 import siteData from "@/data/siteData.json";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
+import CropModal from "@/components/CropModal";
 import { Image, Video, Type, Download, RotateCcw, Trash2, Plus, Upload, Save, ArrowLeft, Shield } from "lucide-react";
 import { useNavigate } from "react-router";
 
@@ -19,6 +20,14 @@ export default function Editor() {
   });
   const [exportUrl, setExportUrl] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+
+  // 裁剪弹窗状态
+  const [cropModal, setCropModal] = useState<{
+    open: boolean;
+    imageUrl: string;
+    aspectRatio: number;
+    onConfirm: (base64: string) => void;
+  }>({ open: false, imageUrl: "", aspectRatio: 1, onConfirm: () => {} });
 
   // 权限检查：只有管理员能访问编辑器
   useEffect(() => {
@@ -161,11 +170,19 @@ export default function Editor() {
     });
   };
 
-  const uploadImageField = async (e: ChangeEvent<HTMLInputElement>, fieldPath: string) => {
+  const uploadImageField = async (e: ChangeEvent<HTMLInputElement>, fieldPath: string, aspectRatio: number) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const base64 = await readFileToBase64(file);
-    update(fieldPath, base64);
+    setCropModal({
+      open: true,
+      imageUrl: base64,
+      aspectRatio,
+      onConfirm: (cropped: string) => {
+        update(fieldPath, cropped);
+        setCropModal(prev => ({ ...prev, open: false }));
+      },
+    });
     e.target.value = "";
   };
 
@@ -185,7 +202,15 @@ export default function Editor() {
     const file = e.target.files?.[0];
     if (!file) return;
     const base64 = await readFileToBase64(file);
-    updateGalleryImage(index, base64);
+    setCropModal({
+      open: true,
+      imageUrl: base64,
+      aspectRatio: 1,
+      onConfirm: (cropped: string) => {
+        updateGalleryImage(index, cropped);
+        setCropModal(prev => ({ ...prev, open: false }));
+      },
+    });
     e.target.value = "";
   };
 
@@ -227,7 +252,7 @@ export default function Editor() {
               <label className="w-full p-2 flex items-center justify-center gap-2 cursor-pointer text-xs" style={{ border: "1px dashed #e5e5e5", borderRadius: "2px" }}>
                 <Upload size={14} style={{ color: "#8d8d8d" }} />
                 <span style={{ color: "#8d8d8d" }}>点击替换</span>
-                <input type="file" accept="image/*" onChange={e => uploadImageField(e, "hero.heroImage")} className="hidden" />
+                <input type="file" accept="image/*" onChange={e => uploadImageField(e, "hero.heroImage", 16/9)} className="hidden" />
               </label>
             </div>
             {/* 关于肖像图 */}
@@ -237,7 +262,7 @@ export default function Editor() {
               <label className="w-full p-2 flex items-center justify-center gap-2 cursor-pointer text-xs" style={{ border: "1px dashed #e5e5e5", borderRadius: "2px" }}>
                 <Upload size={14} style={{ color: "#8d8d8d" }} />
                 <span style={{ color: "#8d8d8d" }}>点击替换</span>
-                <input type="file" accept="image/*" onChange={e => uploadImageField(e, "about.aboutPortrait")} className="hidden" />
+                <input type="file" accept="image/*" onChange={e => uploadImageField(e, "about.aboutPortrait", 3/4)} className="hidden" />
               </label>
             </div>
           </div>
@@ -348,6 +373,16 @@ export default function Editor() {
           <button onClick={handleReset} className="flex items-center gap-2 px-6 py-3 text-sm" style={{ border: "1px solid #e5e5e5", borderRadius: "2px" }}><RotateCcw size={16} /> 重置</button>
         </div>
       </div>
+
+      {/* 裁剪弹窗 */}
+      {cropModal.open && (
+        <CropModal
+          imageUrl={cropModal.imageUrl}
+          aspectRatio={cropModal.aspectRatio}
+          onConfirm={cropModal.onConfirm}
+          onCancel={() => setCropModal(prev => ({ ...prev, open: false }))}
+        />
+      )}
     </div>
   );
 }

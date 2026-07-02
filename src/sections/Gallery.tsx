@@ -28,7 +28,7 @@ export default function Gallery() {
   const { isAdmin } = useAdmin();
   const { isAuthenticated } = useAuth();
 
-  const uploadedImages = siteData.galleryImages.map((img) => ({
+  const uploadedImages = siteData.gallery.images.map((img) => ({
     id: img.id,
     url: img.url,
     title: img.title || "",

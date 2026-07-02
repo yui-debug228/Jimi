@@ -27,7 +27,10 @@ export default function Admin() {
   }
   if (!isAdmin) return null;
 
-  const stats = siteData.stats;
+  const stats = siteData.stats || {
+    totalUsers: 0, adminCount: 0, regularUserCount: 0,
+    totalImages: 0, totalVideos: 0, totalLikes: 0, likeDistribution: []
+  };
 
   return (
     <div style={{ backgroundColor: "#f2f2f2", minHeight: "100vh" }}>
@@ -92,7 +95,7 @@ export default function Admin() {
                   </div>
                 ))}
               </div>
-              {stats.likeDistribution.length > 0 && (
+              {stats.likeDistribution && stats.likeDistribution.length > 0 && (
                 <div className="mt-6 p-5" style={{ backgroundColor: "#fff", border: "1px solid #e5e5e5", borderRadius: "4px" }}>
                   <h3 className="flex items-center gap-1.5 text-sm mb-4" style={{ color: "#8d8d8d" }}>
                     <TrendingUp size={14} /> 点赞排行
@@ -123,7 +126,7 @@ export default function Admin() {
               <div className="p-6 space-y-5" style={{ backgroundColor: "#fff", border: "1px solid #e5e5e5", borderRadius: "4px" }}>
                 <p className="text-xs" style={{ color: "#b1b1b1" }}>当前为静态演示模式，配置数据来自 siteData.json</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {Object.entries(siteData.siteConfig).map(([key, value]) => (
+                  {Object.entries(siteData.siteConfig || {}).map(([key, value]) => (
                     <div key={key}>
                       <label className="text-xs block mb-1" style={{ color: "#8d8d8d" }}>{key}</label>
                       <div className="px-3 py-2 text-sm break-all" style={{ backgroundColor: "#f2f2f2", borderRadius: "2px" }}>{String(value)}</div>
@@ -140,7 +143,7 @@ export default function Admin() {
             <h2 className="serif-display flex items-center gap-2 mb-6" style={{ fontSize: "20px", letterSpacing: "0.03em" }}>
               <FileText size={18} /> 管理员操作日志
             </h2>
-            {siteData.logs.length > 0 ? (
+            {siteData.logs && siteData.logs.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm" style={{ borderCollapse: "collapse" }}>
                   <thead>
@@ -186,7 +189,7 @@ export default function Admin() {
               <h2 className="serif-display flex items-center gap-2 mb-4" style={{ fontSize: "20px", letterSpacing: "0.03em" }}>
                 <Bug size={18} /> 认证调试日志
               </h2>
-              {siteData.debugLogs.length > 0 ? (
+              {siteData.debugLogs && siteData.debugLogs.length > 0 ? (
                 <div className="space-y-2">
                   {siteData.debugLogs.map((log) => (
                     <div key={log.id} className="p-3 text-xs" style={{ backgroundColor: "#fff", border: "1px solid #e5e5e5", borderRadius: "4px" }}>

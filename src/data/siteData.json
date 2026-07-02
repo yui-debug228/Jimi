@@ -83,5 +83,49 @@
   "footer": {
     "siteName": "米米",
     "copyright": "米米的小世界"
-  }
+  },
+  "stats": {
+    "totalUsers": 3,
+    "adminCount": 1,
+    "regularUserCount": 2,
+    "totalImages": 8,
+    "totalVideos": 2,
+    "totalLikes": 42,
+    "likeDistribution": [
+      { "imageId": "preset-hero", "count": 15 },
+      { "imageId": "preset-portrait", "count": 12 },
+      { "imageId": "preset-play", "count": 8 },
+      { "imageId": "preset-window", "count": 7 }
+    ]
+  },
+  "siteConfig": {
+    "siteName": "米米的小世界",
+    "heroTitle": "欢迎光临\n米米的小世界",
+    "heroSubtitle": "灰色法国蓝猫 · 2岁 · 性格文静",
+    "aboutText": "米米是一只出生于杭州的灰色英短。",
+    "catName": "米米",
+    "catBreed": "法国蓝猫 / 英短",
+    "catAge": "2岁",
+    "catPersonality": "文静、慵懒、好奇"
+  },
+  "logs": [
+    {
+      "id": 1,
+      "userName": "admin",
+      "action": "create",
+      "target": "image",
+      "targetId": null,
+      "details": "初始化站点",
+      "createdAt": "2025-07-01T10:00:00Z"
+    }
+  ],
+  "debugLogs": [
+    {
+      "id": 1,
+      "event": "init",
+      "details": "静态演示模式已启动",
+      "headers": null,
+      "createdAt": "2025-07-01T10:00:00Z"
+    }
+  ]
 }
